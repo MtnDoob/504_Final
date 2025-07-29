@@ -260,8 +260,4 @@ The results demonstrate that movie ratings can be predicted with moderate accura
   - **Sections**: Pipeline optimization, results analysis
   - **Attribution**: AI assistance noted in code comments
 
-- **Tool 2**: GitHub Copilot (if used)
-  - **Purpose**: Code completion and function suggestions
-  - **Sections**: Data preprocessing pipeline
-  - **Attribution**: Copilot suggestions modified and validated
 
