@@ -265,7 +265,3 @@ The results demonstrate that movie ratings can be predicted with moderate accura
   - **Sections**: Data preprocessing pipeline
   - **Attribution**: Copilot suggestions modified and validated
 
-### Disclosure Plan
-- Code comments explaining AI assistance
-- Report footnotes for AI-generated content
-- Clear explanation of modifications and understanding
