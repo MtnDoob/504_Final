@@ -11,17 +11,17 @@
 
 ### Problem Statement
 **What is the problem you are going to solve?**
-We want to be able to predict movie ratings based on various movie characteristics including content rating, distribution type, descriptions, and other metadata features.
+The goal of this project is to predict audience ratings of movies based on features including content rating, distribution type, movie descriptions, genre, language, cast information, and other metadata to train machine learning models capable of estimating the numeric rating a movie might receive.
 
 **Why does the problem need to be solved?**
-Movie rating prediction is valuable for streaming platforms, movie studios, and recommendation systems to understand audience preferences, optimize content acquisition strategies, and improve user experience. Accurate rating predictions can help stakeholders make informed decisions about movie investments and content curation.
+Movie rating prediction is valuable for streaming platforms, movie studios, and recommendation systems to understand audience preferences, optimize content acquisition strategies, and improve user experience. Accurate rating predictions can help stakeholders make informed data-driven decisions about movie investments and content curation.
 
 **What aspect of the problem will a machine/deep learning model solve?**
 With the abundance of movie metadata available, machine learning models can identify complex patterns and relationships between movie characteristics and audience ratings that would be difficult to detect manually. The models can process multiple features simultaneously to provide accurate rating predictions for new movies.
 
 ### STAR Framework Planning
-- **Situation**: Movie industry stakeholders need to predict audience reception of movies based on available metadata
-- **Task**: Develop and compare multiple machine learning models to predict movie ratings using Letterboxd dataset
+- **Situation**: Movie industry stakeholders need to predict audience reception of movies based on available metadata. Traditional approaches are manual, time-consuming, and often biased.
+- **Task**: Develop and compare multiple machine learning models to accurately predict movie ratings using Letterboxd dataset.
 - **Action**: Implement comprehensive ML pipeline with preprocessing, feature engineering, and model comparison
 - **Result**: Achieve 60.6% variance explanation in movie ratings with Decision Tree as the best-performing model
 
@@ -32,7 +32,7 @@ With the abundance of movie metadata available, machine learning models can iden
 ### Dataset Details
 - **Dataset Name**: Letterboxd
 - **Source**: https://www.kaggle.com/datasets/gsimonx37/letterboxd/data
-- **Size**: 400,000+ data points (after removing missing values)
+- **Size**: 434,256 data points (after removing missing values)
 - **Features**: 24 processed features (4 numerical, 9 categorical with high-cardinality handling)
 - **Target Variable**: Movie ratings (continuous variable)
 
@@ -134,32 +134,38 @@ With the abundance of movie metadata available, machine learning models can iden
 ### Model Comparison Framework
 | Model | Test R² | RMSE | MAE | Training Time | Complexity |
 |-------|---------|------|-----|---------------|------------|
-| Linear Regression | 0.3927 | 0.4469 | 0.3483 | Fast | Low |
-| Ridge Regression | 0.3927 | 0.4469 | 0.3483 | Fast | Low |
-| Lasso Regression | 0.1680 | 0.5230 | 0.4199 | Fast | Low |
-| Elastic Net | 0.2342 | 0.5018 | 0.3996 | Fast | Low |
 | Decision Tree | 0.6060 | 0.3599 | 0.2627 | Medium | Medium |
 | Random Forest | 0.5946 | 0.3651 | 0.2798 | High | High |
+| Ridge Regression | 0.3927 | 0.4469 | 0.3483 | Fast | Low |
+| Linear Regression | 0.3927 | 0.4469 | 0.3483 | Fast | Low |
 | Extra Trees | 0.3597 | 0.4588 | 0.3626 | High | High |
+| Elastic Net | 0.2342 | 0.5018 | 0.3996 | Fast | Low |
+| Lasso Regression | 0.1680 | 0.5230 | 0.4199 | Fast | Low |
 
 ### Key Findings
 - **Best Performing Model**: Decision Tree (R² = 0.6060) - unexpectedly outperformed ensemble methods
-- **Surprising Results**: 
+- **Model Rankings**: 
+  1. Decision Tree (60.6% variance explained)
+  2. Random Forest (59.5% variance explained) 
+  3. Ridge/Linear Regression (39.3% variance explained)
+  4. Extra Trees (36.0% variance explained) - significantly underperformed
+- **Surprising Results**:
   - Decision Tree outperformed Random Forest, contrary to typical expectations
-  - Extra Trees significantly underperformed due to aggressive regularization
+  - Extra Trees dramatically underperformed (36.0%) due to aggressive regularization parameters
   - Ridge and Linear Regression performed identically, suggesting minimal multicollinearity
-- **Challenges Encountered**: 
-  - Speed optimization required aggressive regularization that hurt Extra Trees performance
+  - Lasso performed worst (16.8%) due to overly aggressive feature selection
+- **Challenges Encountered**:
+  - Speed optimization required aggressive regularization that severely hurt Extra Trees performance
   - High-cardinality text features showed low importance with simple label encoding
-  - Spurious "Unnamed: 0" feature appeared in importance rankings
-- **Feature Importance**: 
-  - Most important: rating_y_G (0.38), type_Theatrical (0.20), type_Theatrical limited (0.10)
-  - Content rating categories dominate predictive power
-  - Distribution types significantly influence ratings
-  - Text features (descriptions, taglines) underutilized with current preprocessing
+  - Spurious "Unnamed: 0" feature appeared in importance rankings, indicating preprocessing artifact
+- **Feature Importance**:
+  - Most important: rating_y_G (content rating for G-rated movies) - dominant predictor
+  - Distribution types (Theatrical, TV, Digital releases) highly influential
+  - Content rating categories consistently outweigh other feature types
+  - Text features (descriptions, taglines) severely underutilized with current preprocessing approach
 
 ### Business/Practical Implications
-The results demonstrate that movie ratings can be predicted with moderate accuracy (60% variance explained) using metadata alone. Content rating (especially G-rated movies) and distribution type are the strongest predictors, suggesting that target audience and release strategy significantly influence ratings. The underperformance of textual features indicates opportunities for improved natural language processing to capture semantic content that could enhance prediction accuracy.
+The results demonstrate that movie ratings can be predicted with moderate accuracy (60.6% variance explained) using metadata alone. Content rating (especially G-rated movies) and distribution type are the strongest predictors, suggesting that target audience and release strategy significantly influence ratings. The dramatic underperformance of Extra Trees highlights the importance of proper hyperparameter tuning, while the poor utilization of textual features indicates substantial opportunities for enhanced natural language processing to capture semantic content and improve prediction accuracy.
 
 ---
 
@@ -205,16 +211,17 @@ The results demonstrate that movie ratings can be predicted with moderate accura
 4. **Results**
    - Model performance: Decision Tree achieved best R² of 0.6060
    - Comparison analysis: Unexpected Decision Tree superiority over Random Forest
-   - Key findings: Content rating and distribution type as primary predictors
+   - Feature analysis: Content rating and distribution type dominance
+   - Extra Trees underperformance: Aggressive regularization impact
 
 5. **Discussion**
    - Interpretation of results: Moderate predictive success with clear feature hierarchy
-   - Limitations: Underutilized text features, speed-optimized parameters
-   - Future work: Advanced NLP for text features, hyperparameter optimization
+   - Limitations: Underutilized text features, suboptimal hyperparameters for Extra Trees
+   - Future work: Advanced NLP for text features, comprehensive hyperparameter optimization
 
 6. **Conclusion**
-   - Summary of findings: 60% variance explanation with interpretable features
-   - Practical implications: Content strategy insights for movie industry
+   - Summary of findings: 60.6% variance explanation with interpretable feature importance
+   - Practical implications: Content strategy and distribution insights for movie industry
 
 ### Appendices
 - **Appendix A**: Code (PDF format)
@@ -227,9 +234,9 @@ The results demonstrate that movie ratings can be predicted with moderate accura
 
 ### Presentation Structure (Equal participation)
 - **Duration**: 12-15 minutes
-- **Team Member 1**: Introduction and Problem Definition (3-4 minutes)
-- **Team Member 2**: Methodology and Data Processing (4-5 minutes)
-- **Team Member 3**: Results, Findings, and Conclusions (4-5 minutes)
+- **Saloni**: Introduction and Problem Definition (3-4 minutes)
+- **Kirsten**: Methodology and Data Processing (4-5 minutes)
+- **Duy-Anh**: Results, Findings, and Conclusions (4-5 minutes)
 
 ### Presentation Outline
 1. **Introduction** (3-4 minutes)
@@ -237,18 +244,18 @@ The results demonstrate that movie ratings can be predicted with moderate accura
    - Dataset overview: 434K Letterboxd records
 
 2. **Methodology** (4-5 minutes)
-   - EDA highlights: Feature distribution and missing data
-   - Model selection rationale: Linear to ensemble comparison
+   - EDA highlights: Feature distribution and missing data handling
+   - Model selection rationale: Linear to ensemble comparison strategy
 
 3. **Results** (4-5 minutes)
-   - Model comparison: Decision Tree superiority
-   - Key findings: Content rating dominance
-   - Feature importance visualizations
+   - Model comparison: Decision Tree superiority (60.6% R²)
+   - Unexpected findings: Extra Trees underperformance analysis
+   - Feature importance: Content rating dominance visualization
 
 4. **Conclusion** (2-3 minutes)
-   - Summary: 60% predictive accuracy achieved
-   - Implications: Content strategy insights
-   - Future work: Enhanced text processing
+   - Summary: 60.6% predictive accuracy with clear feature hierarchy
+   - Implications: Content strategy and distribution insights
+   - Future work: Enhanced NLP and hyperparameter optimization
 
 ---
 
@@ -256,8 +263,6 @@ The results demonstrate that movie ratings can be predicted with moderate accura
 
 ### AI Tools Used
 -  **Tool 1**: Claude
-  - **Purpose**: Code debugging, explanation of results interpretation
-  - **Sections**: Pipeline optimization, results analysis
-  - **Attribution**: AI assistance noted in code comments
-
-
+  - **Purpose**: Code debugging, results interpretation, and consistency checking across documents
+  - **Sections**: Pipeline optimization, results analysis, performance table validation
+  - **Attribution**: AI assistance noted in code comments and document revision process
